@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export function BrandMark({ compact = false }: { compact?: boolean }) {
   return (
-    <Link href="/" className="brand-mark" aria-label="Ganjah Team, inicio">
+    <Link href="/panel" className="brand-mark" aria-label="Ganjah Team, inicio">
       <Image
         className="brand-logo"
         src="/ganjah-team-logo-extracted.png"

@@ -7,8 +7,8 @@ const players = await readFile(new URL("../src/components/players-manager.tsx", 
 const matchdays = await readFile(new URL("../src/components/matchdays-manager.tsx", import.meta.url), "utf8");
 const formation = await readFile(new URL("../src/components/formation-pitch.tsx", import.meta.url), "utf8");
 
-test("las siluetas usan el optimizador nativo con tamaño responsive", () => {
-  assert.doesNotMatch(card, /\bunoptimized\b/);
+test("las siluetas locales evitan solamente el optimizador que falla en producción", () => {
+  assert.match(card, /sizes="\(max-width: 430px\) 88px, 120px"\s+unoptimized\s+aria-hidden/s);
   assert.match(card, /sizes="\(max-width: 430px\) 88px, 120px"/);
 });
 

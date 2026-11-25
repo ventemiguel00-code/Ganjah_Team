@@ -66,6 +66,7 @@ function PlayerAvatar({ player }: { player: Jugador }) {
           width={silhouette.width}
           height={silhouette.height}
           sizes="(max-width: 430px) 88px, 120px"
+          unoptimized
           aria-hidden="true"
         />
       ) : <PlayerSilhouette />}
