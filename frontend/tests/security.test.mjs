@@ -6,6 +6,7 @@ const route = await readFile(new URL("../src/app/api/backend/[...path]/route.ts"
 const policy = await readFile(new URL("../src/lib/proxy-policy.ts", import.meta.url), "utf8");
 const sessionRoute = await readFile(new URL("../src/app/api/auth/session/route.ts", import.meta.url), "utf8");
 const session = await readFile(new URL("../src/lib/auth-session.ts", import.meta.url), "utf8");
+const backendSession = await readFile(new URL("../src/lib/backend-session.ts", import.meta.url), "utf8");
 
 test("el proxy utiliza la sesión cifrada y no credenciales públicas", () => {
   assert.match(route, /readSessionToken/);
@@ -19,6 +20,10 @@ test("el proxy utiliza la sesión cifrada y no credenciales públicas", () => {
   assert.match(session, /session\.expiresAt <= Date\.now\(\)/);
   assert.match(sessionRoute, /api\/auth\/me/);
   assert.match(sessionRoute, /Usuario o contraseña incorrectos/);
+  assert.match(backendSession, /DEFAULT_BACKEND_TIMEOUT_MS = 45_000/);
+  assert.match(backendSession, /GANJAH_BACKEND_TIMEOUT_MS/);
+  assert.match(backendSession, /MAX_BACKEND_TIMEOUT_MS = 55_000/);
+  assert.match(sessionRoute, /AbortSignal\.timeout\(backendRequestTimeoutMs\(\)\)/);
 });
 
 test("el proxy aplica una lista explícita de endpoints y métodos", () => {
@@ -29,4 +34,5 @@ test("el proxy aplica una lista explícita de endpoints y métodos", () => {
   assert.match(policy, /const rules:/);
   assert.ok(policy.includes("api\\/jugadores"));
   assert.ok(policy.includes("api\\/matchdays"));
+  assert.match(route, /setTimeout\(\(\) => controller\.abort\(\), backendRequestTimeoutMs\(\)\)/);
 });

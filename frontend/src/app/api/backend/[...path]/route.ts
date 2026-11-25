@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAllowedBackendRequest } from "@/lib/proxy-policy";
 import { readSessionToken, SESSION_COOKIE } from "@/lib/auth-session";
-import { isBackendSessionActive } from "@/lib/backend-session";
+import { backendRequestTimeoutMs, isBackendSessionActive } from "@/lib/backend-session";
 
 type RouteContext = { params: Promise<{ path: string[] }> };
 
@@ -42,7 +42,7 @@ async function forward(request: NextRequest, context: RouteContext) {
   });
 
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 10_000);
+  const timeout = setTimeout(() => controller.abort(), backendRequestTimeoutMs());
 
   try {
     const body = ["GET", "HEAD"].includes(request.method)
@@ -72,7 +72,7 @@ async function forward(request: NextRequest, context: RouteContext) {
     const message =
       error instanceof Error && error.name === "AbortError"
         ? "El backend tardó demasiado en responder."
-        : "No se pudo conectar con el backend local.";
+        : "No se pudo conectar con el backend.";
     return NextResponse.json({ message }, { status: 502 });
   } finally {
     clearTimeout(timeout);

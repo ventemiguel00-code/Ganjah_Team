@@ -6,12 +6,8 @@ import {
   SESSION_MAX_AGE_SECONDS,
   sessionCookieOptions,
 } from "@/lib/auth-session";
-import { createBackendSession, revokeBackendSession } from "@/lib/backend-session";
+import { backendRequestTimeoutMs, backendUrl, createBackendSession, revokeBackendSession } from "@/lib/backend-session";
 import { randomUUID } from "node:crypto";
-
-function backendUrl() {
-  return (process.env.GANJAH_BACKEND_URL || "http://127.0.0.1:8080").replace(/\/$/, "");
-}
 
 function isSameOrigin(request: NextRequest) {
   const origin = request.headers.get("origin");
@@ -48,7 +44,7 @@ export async function POST(request: NextRequest) {
         Accept: "application/json",
       },
       cache: "no-store",
-      signal: AbortSignal.timeout(10_000),
+      signal: AbortSignal.timeout(backendRequestTimeoutMs()),
     });
 
     if (validation.status === 401 || validation.status === 403) {
