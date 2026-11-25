@@ -46,7 +46,7 @@ export function LoginForm() {
       </label>
       {error && <p className="login-error" role="alert">{error}</p>}
       <button className="button button-primary button-large" type="submit" disabled={loading}>
-        {loading ? "Validando…" : "Entrar al sistema"}
+        {loading ? "Validando…" : "Ingresar"}
       </button>
     </form>
   );

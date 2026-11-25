@@ -82,6 +82,10 @@ export function MatchdaysManager() {
     () => players.filter((player) => rosterPositionFilter === "all" || normalizePlayerPosition(player.posicion) === rosterPositionFilter),
     [players, rosterPositionFilter],
   );
+  const playersByName = useMemo(
+    () => new Map(players.map((player) => [player.nombre, player])),
+    [players],
+  );
   const localCount = selected.filter((player) => player.equipo === "LOCAL").length;
   const visitorCount = selected.filter((player) => player.equipo === "VISITANTE").length;
   const formationTeams = useMemo(() => ({
@@ -268,7 +272,7 @@ export function MatchdaysManager() {
           {matches.map((match) => {
             const local = match.jugadores.filter((player) => player.equipo === "LOCAL");
             const visitor = match.jugadores.filter((player) => player.equipo === "VISITANTE");
-            const resolveConfirmedPlayer = (entry: JugadorDePartido, index: number): Jugador => players.find((player) => player.nombre === entry.nombre) || {
+            const resolveConfirmedPlayer = (entry: JugadorDePartido, index: number): Jugador => playersByName.get(entry.nombre) || {
               id: -(match.id * 100 + index + 1),
               nombre: entry.nombre,
               posicion: "Sin posición verificada",
