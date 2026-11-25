@@ -17,6 +17,7 @@ export default function Home() {
         </div>
 
         <div className="welcome-access">
+          <h1 className="login-title">Ingresar</h1>
           <LoginForm />
         </div>
       </section>
