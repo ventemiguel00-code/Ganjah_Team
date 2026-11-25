@@ -94,8 +94,10 @@ export const PlayerCard = memo(function PlayerCard({ player, team, compact = fal
         {team && <b>{team === "LOCAL" ? "LOC" : "VIS"}</b>}
       </div>
       <div className="game-card-identity">
-        <div className="game-card-rating"><strong>{classificationAvailable ? displayLevel(rating) : "—"}</strong></div>
-        <span className="game-card-position" aria-label={`Posición: ${player.posicion || "sin posición"}`}>{positionAbbreviation}</span>
+        <div className="game-card-rating">
+          <strong>{classificationAvailable ? displayLevel(rating) : "—"}</strong>
+          <span className="game-card-position" aria-label={`Posición: ${player.posicion || "sin posición"}`}>{positionAbbreviation}</span>
+        </div>
         <PlayerAvatar player={player} />
       </div>
       <h2 title={player.nombre}>{player.nombre}</h2>

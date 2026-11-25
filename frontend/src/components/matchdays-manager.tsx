@@ -12,6 +12,7 @@ import { TeamListImage } from "@/components/team-list-image";
 import { normalizePlayerPosition, playerPositionLabels, type PlayerPosition } from "@/lib/player-position";
 
 type RosterPositionFilter = "all" | PlayerPosition;
+type MatchdayTab = "generator" | "records";
 
 const rosterPositionOptions: Array<{ value: RosterPositionFilter; label: string }> = [
   { value: "all", label: "Todos" },
@@ -42,6 +43,7 @@ export function MatchdaysManager() {
   const [assignments, setAssignments] = useState<Assignment>({});
   const [draftSelection, setDraftSelection] = useState<Record<string, boolean>>({});
   const [rosterPositionFilter, setRosterPositionFilter] = useState<RosterPositionFilter>("all");
+  const [activeTab, setActiveTab] = useState<MatchdayTab>("generator");
   const [editingRoster, setEditingRoster] = useState<number | null>(null);
   const [scores, setScores] = useState<Record<number, { local: string; visitor: string }>>({});
   const [loading, setLoading] = useState(true);
@@ -147,6 +149,7 @@ export function MatchdaysManager() {
       setAssignments({});
       setDraftSelection({});
       await load();
+      setActiveTab("records");
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "No se pudo guardar la alineación.");
     } finally {
@@ -160,6 +163,7 @@ export function MatchdaysManager() {
     setAssignments(Object.fromEntries(match.jugadores.map((player) => [player.nombre, player.equipo])));
     setDraftSelection(Object.fromEntries(match.jugadores.map((player) => [player.nombre, true])));
     setNotice("");
+    setActiveTab("generator");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -199,6 +203,11 @@ export function MatchdaysManager() {
     <div className="manager-stack">
       {notice && <StatusPanel tone="success" title="Listo" message={notice} />}
       {error && <StatusPanel tone="error" title="No pudimos completar la operación" message={error} />}
+      <div className="matchday-tabs" role="tablist" aria-label="Secciones de MatchDays">
+        <button id="matchday-generator-tab" className={`matchday-tab ${activeTab === "generator" ? "is-active" : ""}`} type="button" role="tab" aria-selected={activeTab === "generator"} aria-controls="matchday-generator-panel" onClick={() => setActiveTab("generator")}>Generador de equipos</button>
+        <button id="matchday-records-tab" className={`matchday-tab ${activeTab === "records" ? "is-active" : ""}`} type="button" role="tab" aria-selected={activeTab === "records"} aria-controls="matchday-records-panel" onClick={() => setActiveTab("records")}>Registro de partidos</button>
+      </div>
+      {activeTab === "generator" && <section id="matchday-generator-panel" className="matchday-panel" role="tabpanel" aria-labelledby="matchday-generator-tab">
       <section className="form-panel roster-builder" aria-labelledby="roster-title">
         <div className="panel-heading">
           <div><span className="eyebrow">{editingRoster ? "Editar encuentro" : "Draft 12–18"}</span><h2 id="roster-title">{editingRoster ? "Ajustar alineaciones" : "Generar equipos"}</h2></div>
@@ -252,6 +261,8 @@ export function MatchdaysManager() {
           />
         </>
       )}
+      </section>}
+      {activeTab === "records" && <section id="matchday-records-panel" className="matchday-panel" role="tabpanel" aria-labelledby="matchday-records-tab">
       {loading ? <div className="content-loading"><Spinner label="Cargando historial" /></div> : matches.length ? (
         <section className="match-list" aria-label="Historial de MatchDays">
           {matches.map((match) => {
@@ -287,6 +298,7 @@ export function MatchdaysManager() {
           })}
         </section>
       ) : <StatusPanel title="Sin historial todavía" message="El primer MatchDay aparecerá aquí cuando confirmes sus alineaciones." />}
+      </section>}
     </div>
   );
 }

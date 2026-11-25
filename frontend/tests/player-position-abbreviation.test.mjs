@@ -14,11 +14,10 @@ test("centraliza las cuatro abreviaturas de posición aprobadas", () => {
   assert.match(positions, /getPlayerPositionAbbreviation/);
 });
 
-test("muestra la posición abreviada entre calificación y silueta en todas las tarjetas", () => {
-  assert.match(playerCard, /<div className="game-card-rating">/);
-  assert.match(playerCard, /className="game-card-position"/);
+test("muestra la posición abreviada debajo de la calificación en todas las tarjetas", () => {
+  assert.match(playerCard, /<div className="game-card-rating">\s*<strong>[\s\S]*?<span className="game-card-position"/);
   assert.match(playerCard, /<PlayerAvatar player=\{player\} \/>/);
-  assert.match(styles, /left: 50%; top: 50%/);
-  assert.match(styles, /transform: translate\(-50%,-50%\)/);
+  assert.match(styles, /\.game-card-rating \{ display: grid; justify-items: center;[\s\S]*?gap: \.2rem/);
+  assert.doesNotMatch(styles, /\.game-card-position \{ position: absolute/);
   assert.match(styles, /\.game-card-compact \.game-card-position/);
 });

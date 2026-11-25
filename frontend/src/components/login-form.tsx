@@ -37,11 +37,11 @@ export function LoginForm() {
   return (
     <form className="login-form welcome-form" onSubmit={handleSubmit}>
       <label>
-        <span>Usuario</span>
+        <span className="sr-only">Usuario</span>
         <input name="username" type="text" autoComplete="username" autoCapitalize="none" required />
       </label>
       <label>
-        <span>Contraseña</span>
+        <span className="sr-only">Contraseña</span>
         <input name="password" type="password" autoComplete="current-password" required />
       </label>
       {error && <p className="login-error" role="alert">{error}</p>}
