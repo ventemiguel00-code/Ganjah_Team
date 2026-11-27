@@ -17,6 +17,7 @@ const navigation: Array<{ href: string; label: string; icon: IconName }> = [
 
 export function AppShell({ children, username, role }: { children: React.ReactNode; username: string; role: UserRole }) {
   const pathname = usePathname();
+  const isHomePanel = pathname === "/panel";
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
@@ -39,9 +40,9 @@ export function AppShell({ children, username, role }: { children: React.ReactNo
 
   return (
     <AuthProvider username={username} role={role}>
-    <div className="app-shell">
+    <div className={isHomePanel ? "app-shell app-shell-home" : "app-shell"}>
       <a className="skip-link" href="#contenido">Saltar al contenido</a>
-      <header className="mobile-header">
+      {!isHomePanel && <header className="mobile-header">
         <BrandMark compact />
         <button
           className="icon-button"
@@ -52,9 +53,9 @@ export function AppShell({ children, username, role }: { children: React.ReactNo
         >
           <Icon name={open ? "x" : "menu"} />
         </button>
-      </header>
+      </header>}
 
-      <aside className={`sidebar ${open ? "sidebar-open" : ""}`}>
+      {!isHomePanel && <aside className={`sidebar ${open ? "sidebar-open" : ""}`}>
         <div className="sidebar-brand"><BrandMark /></div>
         <nav className="main-nav" aria-label="Navegación principal">
           {navigation.map((item) => {
@@ -81,9 +82,9 @@ export function AppShell({ children, username, role }: { children: React.ReactNo
           </button>
           {logoutError && <span role="alert">{logoutError}</span>}
         </div>
-      </aside>
+      </aside>}
 
-      {open && <button className="sidebar-scrim" aria-label="Cerrar navegación" onClick={() => setOpen(false)} />}
+      {!isHomePanel && open && <button className="sidebar-scrim" aria-label="Cerrar navegación" onClick={() => setOpen(false)} />}
       <main id="contenido" className="app-content">{children}</main>
     </div>
     </AuthProvider>
