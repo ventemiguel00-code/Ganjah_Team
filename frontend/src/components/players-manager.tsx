@@ -65,8 +65,10 @@ export function PlayersManager() {
       return filterPlayers(players, performanceFilter, positionFilter)
         .map((player, originalIndex) => ({ player, originalIndex }))
         .sort((a, b) => {
-          const rankA = positionRank.get(normalizePlayerPosition(a.player.posicion) ?? "") ?? playerPositionOrder.length;
-          const rankB = positionRank.get(normalizePlayerPosition(b.player.posicion) ?? "") ?? playerPositionOrder.length;
+          const positionA = normalizePlayerPosition(a.player.posicion);
+          const positionB = normalizePlayerPosition(b.player.posicion);
+          const rankA = positionA ? positionRank.get(positionA) ?? playerPositionOrder.length : playerPositionOrder.length;
+          const rankB = positionB ? positionRank.get(positionB) ?? playerPositionOrder.length : playerPositionOrder.length;
           return rankA - rankB || a.originalIndex - b.originalIndex;
         })
         .map(({ player }) => player);
