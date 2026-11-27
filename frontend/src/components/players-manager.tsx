@@ -60,7 +60,17 @@ export function PlayersManager() {
   const editTriggerRef = useRef<HTMLButtonElement | null>(null);
 
   const filteredPlayers = useMemo(
-    () => filterPlayers(players, performanceFilter, positionFilter),
+    () => {
+      const positionRank = new Map(playerPositionOrder.map((position, index) => [position, index]));
+      return filterPlayers(players, performanceFilter, positionFilter)
+        .map((player, originalIndex) => ({ player, originalIndex }))
+        .sort((a, b) => {
+          const rankA = positionRank.get(normalizePlayerPosition(a.player.posicion) ?? "") ?? playerPositionOrder.length;
+          const rankB = positionRank.get(normalizePlayerPosition(b.player.posicion) ?? "") ?? playerPositionOrder.length;
+          return rankA - rankB || a.originalIndex - b.originalIndex;
+        })
+        .map(({ player }) => player);
+    },
     [performanceFilter, players, positionFilter],
   );
   const filtersActive = performanceFilter !== "all" || positionFilter !== "all";
