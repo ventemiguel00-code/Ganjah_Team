@@ -28,8 +28,8 @@ test("el normalizador compartido conserva los aliases de las cuatro posiciones",
   assert.match(positions, /normalizePlayerPosition/);
 });
 
-test("crear y editar jugadores obliga a elegir una de las cuatro posiciones", () => {
-  assert.match(manager, /const PLAYER_POSITIONS: PlayerPosition\[\] = \["PORTERO", "DEFENSA", "MEDIOCAMPISTA", "DELANTERO"\]/);
+test("crear y editar jugadores usa el orden central de las cuatro posiciones", () => {
+  assert.match(manager, /playerPositionOrder\.map/);
   assert.match(manager, /<select value=\{form\.posicion\}/);
   assert.match(manager, /\}\)\} required><option value="" disabled>/);
   assert.match(manager, /Selecciona una posición/);

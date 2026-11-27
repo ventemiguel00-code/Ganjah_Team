@@ -8,9 +8,7 @@ import { Icon } from "@/components/icons";
 import { PlayerCard } from "@/components/player-card";
 import { Spinner, StatusPanel } from "@/components/ui";
 import { filterPlayers, type PerformanceFilter, type PositionFilter } from "@/lib/player-filters";
-import { normalizePlayerPosition, playerPositionLabels, type PlayerPosition } from "@/lib/player-position";
-
-const PLAYER_POSITIONS: PlayerPosition[] = ["PORTERO", "DEFENSA", "MEDIOCAMPISTA", "DELANTERO"];
+import { normalizePlayerPosition, playerPositionAbbreviations, playerPositionLabels, playerPositionOrder } from "@/lib/player-position";
 
 function editablePosition(position?: string): string {
   const normalized = normalizePlayerPosition(position);
@@ -212,7 +210,7 @@ export function PlayersManager() {
         <div className="filter-copy"><span className="eyebrow">Explorar plantilla</span><h2 id="player-filters-title">Filtrar jugadores</h2><p aria-live="polite">{filteredPlayers.length} de {players.length} resultados</p></div>
         <div className="filter-controls">
           <label><span>Rendimiento</span><select value={performanceFilter} onChange={(event) => setPerformanceFilter(event.target.value as PerformanceFilter)}><option value="all">Todos</option><option value="gold">Superior · dorado</option><option value="silver">Regular · plateado</option><option value="bronze">Bajo rendimiento · bronce</option></select></label>
-          <label><span>Posición</span><select value={positionFilter} onChange={(event) => setPositionFilter(event.target.value as PositionFilter)}><option value="all">Todas las posiciones</option><option value="DELANTERO">Delantero</option><option value="MEDIOCAMPISTA">Mediocampista</option><option value="DEFENSA">Defensa</option><option value="PORTERO">Portero</option></select></label>
+          <label><span>Posición</span><select value={positionFilter} onChange={(event) => setPositionFilter(event.target.value as PositionFilter)}><option value="all">Todas las posiciones</option>{playerPositionOrder.map((position) => <option key={position} value={position}>{playerPositionAbbreviations[position]} · {playerPositionLabels[position]}</option>)}</select></label>
           <button className="button" type="button" disabled={!filtersActive} onClick={() => { setPerformanceFilter("all"); setPositionFilter("all"); }}>Limpiar filtros</button>
         </div>
       </section>
@@ -224,7 +222,7 @@ export function PlayersManager() {
             {error && <StatusPanel tone="error" title="No se guardaron los cambios" message={error} />}
             <form className="form-grid" onSubmit={submit}>
               <label className="field field-span-2"><span>Nombre</span><input ref={firstFieldRef} value={form.nombre} onChange={(event) => setForm({ ...form, nombre: event.target.value })} maxLength={80} required /></label>
-              <label className="field field-span-2"><span>Posición</span><select value={form.posicion} onChange={(event) => setForm({ ...form, posicion: event.target.value })} required><option value="" disabled>Selecciona una posición</option>{PLAYER_POSITIONS.map((position) => <option key={position} value={playerPositionLabels[position]}>{playerPositionLabels[position]}</option>)}</select></label>
+              <label className="field field-span-2"><span>Posición</span><select value={form.posicion} onChange={(event) => setForm({ ...form, posicion: event.target.value })} required><option value="" disabled>Selecciona una posición</option>{playerPositionOrder.map((position) => <option key={position} value={playerPositionLabels[position]}>{playerPositionAbbreviations[position]} · {playerPositionLabels[position]}</option>)}</select></label>
               <label className="field"><span>Nivel de ataque</span><select value={form.nivelAtaque} onChange={(event) => setForm({ ...form, nivelAtaque: Number(event.target.value) })}>{[1,2,3,4,5].map((value) => <option key={value} value={value}>{value} estrella{value === 1 ? "" : "s"}</option>)}</select></label>
               <label className="field"><span>Nivel de defensa</span><select value={form.nivelDefensa} onChange={(event) => setForm({ ...form, nivelDefensa: Number(event.target.value) })}>{[1,2,3,4,5].map((value) => <option key={value} value={value}>{value} estrella{value === 1 ? "" : "s"}</option>)}</select></label>
               <div className="form-actions field-span-2"><button className="button" type="button" disabled={saving} onClick={closeForm}>Cancelar</button><button className="button button-primary" disabled={saving}>{saving ? "Guardando…" : editingId !== null ? "Guardar cambios" : "Crear jugador"}</button></div>

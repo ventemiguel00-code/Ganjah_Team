@@ -10,8 +10,8 @@ import { Icon, type IconName } from "@/components/icons";
 const navigation: Array<{ href: string; label: string; icon: IconName }> = [
   { href: "/panel", label: "Resumen", icon: "home" },
   { href: "/jugadores", label: "Jugadores", icon: "users" },
-  { href: "/equipos", label: "Equipos", icon: "shield" },
   { href: "/matchdays", label: "MatchDays", icon: "calendar" },
+  { href: "/equipos", label: "Equipos", icon: "shield" },
   { href: "/estadisticas", label: "Estadísticas", icon: "chart" },
 ];
 

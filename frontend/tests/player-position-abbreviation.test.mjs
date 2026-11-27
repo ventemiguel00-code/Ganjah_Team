@@ -7,7 +7,7 @@ const playerCard = await readFile(new URL("../src/components/player-card.tsx", i
 const styles = await readFile(new URL("../src/app/globals.css", import.meta.url), "utf8");
 
 test("centraliza las cuatro abreviaturas de posición aprobadas", () => {
-  assert.match(positions, /PORTERO: "GK"/);
+  assert.match(positions, /PORTERO: "PO"/);
   assert.match(positions, /DEFENSA: "DF"/);
   assert.match(positions, /MEDIOCAMPISTA: "MD"/);
   assert.match(positions, /DELANTERO: "DL"/);

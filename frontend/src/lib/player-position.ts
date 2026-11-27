@@ -1,10 +1,14 @@
 export type PlayerPosition = "PORTERO" | "DEFENSA" | "MEDIOCAMPISTA" | "DELANTERO";
 
+/** Canonical presentation order; aliases remain compatible at the API boundary. */
+export const playerPositionOrder: readonly PlayerPosition[] = ["PORTERO", "DEFENSA", "MEDIOCAMPISTA", "DELANTERO"];
+
 const POSITION_ALIASES: Record<string, PlayerPosition> = {
   POR: "PORTERO",
   PORTERO: "PORTERO",
   ARQUERO: "PORTERO",
   GUARDAMETA: "PORTERO",
+  GK: "PORTERO",
   GOALKEEPER: "PORTERO",
   DEF: "DEFENSA",
   DEFENSA: "DEFENSA",
@@ -34,7 +38,7 @@ export const playerPositionLabels: Record<PlayerPosition, string> = {
 };
 
 export const playerPositionAbbreviations: Record<PlayerPosition, string> = {
-  PORTERO: "GK",
+  PORTERO: "PO",
   DEFENSA: "DF",
   MEDIOCAMPISTA: "MD",
   DELANTERO: "DL",

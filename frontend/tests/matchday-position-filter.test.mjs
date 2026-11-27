@@ -7,10 +7,7 @@ const manager = await readFile(new URL("../src/components/matchdays-manager.tsx"
 test("el generador de equipos filtra exclusivamente por las cuatro posiciones", () => {
   assert.match(manager, /type RosterPositionFilter = "all" \| PlayerPosition/);
   assert.match(manager, /normalizePlayerPosition\(player\.posicion\) === rosterPositionFilter/);
-  assert.match(manager, /value: "PORTERO"/);
-  assert.match(manager, /value: "DEFENSA"/);
-  assert.match(manager, /value: "MEDIOCAMPISTA"/);
-  assert.match(manager, /value: "DELANTERO"/);
+  assert.match(manager, /\.\.\.playerPositionOrder\.map/);
 });
 
 test("cambiar el filtro no modifica la convocatoria ni las asignaciones", () => {

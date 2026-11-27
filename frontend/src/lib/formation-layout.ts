@@ -1,4 +1,4 @@
-import { normalizePlayerPosition, type PlayerPosition } from "@/lib/player-position";
+import { normalizePlayerPosition, playerPositionOrder, type PlayerPosition } from "@/lib/player-position";
 import type { Equipo, Jugador } from "@/lib/types";
 
 export interface FormationSpot {
@@ -15,7 +15,8 @@ const POSITION_DEPTH: Record<PlayerPosition, number> = {
   DELANTERO: 53,
 };
 
-const POSITION_ORDER: PlayerPosition[] = ["PORTERO", "DEFENSA", "MEDIOCAMPISTA", "DELANTERO"];
+// Position depth still determines the football layout on the pitch.
+const POSITION_ORDER = playerPositionOrder;
 
 function stablePlayers(players: Jugador[]) {
   return [...players].sort((a, b) => a.id - b.id || a.nombre.localeCompare(b.nombre, "es"));

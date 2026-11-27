@@ -9,18 +9,19 @@ import type { Equipo, Jugador, JugadorDePartido, MatchDay } from "@/lib/types";
 import { useAuth } from "@/components/auth-context";
 import { Spinner, StatusPanel } from "@/components/ui";
 import { TeamListImage } from "@/components/team-list-image";
-import { normalizePlayerPosition, playerPositionLabels, type PlayerPosition } from "@/lib/player-position";
+import { normalizePlayerPosition, playerPositionAbbreviations, playerPositionLabels, playerPositionOrder, type PlayerPosition } from "@/lib/player-position";
 
 type RosterPositionFilter = "all" | PlayerPosition;
 type MatchdayTab = "generator" | "records";
 
 const rosterPositionOptions: Array<{ value: RosterPositionFilter; label: string }> = [
   { value: "all", label: "Todos" },
-  { value: "PORTERO", label: playerPositionLabels.PORTERO },
-  { value: "DEFENSA", label: playerPositionLabels.DEFENSA },
-  { value: "MEDIOCAMPISTA", label: playerPositionLabels.MEDIOCAMPISTA },
-  { value: "DELANTERO", label: playerPositionLabels.DELANTERO },
+  ...playerPositionOrder.map((position) => ({ value: position, label: `${playerPositionAbbreviations[position]} · ${playerPositionLabels[position]}` })),
 ];
+
+function normalizedPlayerName(value: string): string {
+  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("es-CO").trim();
+}
 
 const FormationPitch = dynamic(
   () => import("@/components/formation-pitch").then((module) => module.FormationPitch),
@@ -43,6 +44,7 @@ export function MatchdaysManager() {
   const [assignments, setAssignments] = useState<Assignment>({});
   const [draftSelection, setDraftSelection] = useState<Record<string, boolean>>({});
   const [rosterPositionFilter, setRosterPositionFilter] = useState<RosterPositionFilter>("all");
+  const [rosterSearch, setRosterSearch] = useState("");
   const [activeTab, setActiveTab] = useState<MatchdayTab>("generator");
   const [editingRoster, setEditingRoster] = useState<number | null>(null);
   const [scores, setScores] = useState<Record<number, { local: string; visitor: string }>>({});
@@ -78,9 +80,19 @@ export function MatchdaysManager() {
     () => players.filter((player) => draftSelection[player.nombre]),
     [draftSelection, players],
   );
+  const searchableRosterPlayers = useMemo(
+    () => players.map((player) => ({ player, normalizedName: normalizedPlayerName(player.nombre) })),
+    [players],
+  );
+  const normalizedRosterSearch = useMemo(() => normalizedPlayerName(rosterSearch), [rosterSearch]);
   const visibleRosterPlayers = useMemo(
-    () => players.filter((player) => rosterPositionFilter === "all" || normalizePlayerPosition(player.posicion) === rosterPositionFilter),
-    [players, rosterPositionFilter],
+    () => searchableRosterPlayers
+      .filter(({ player, normalizedName }) =>
+        (rosterPositionFilter === "all" || normalizePlayerPosition(player.posicion) === rosterPositionFilter) &&
+        (!normalizedRosterSearch || normalizedName.includes(normalizedRosterSearch)),
+      )
+      .map(({ player }) => player),
+    [normalizedRosterSearch, rosterPositionFilter, searchableRosterPlayers],
   );
   const playersByName = useMemo(
     () => new Map(players.map((player) => [player.nombre, player])),
@@ -234,10 +246,17 @@ export function MatchdaysManager() {
                   </button>
                 ))}
               </div>
-              <small>{visibleRosterPlayers.length} de {players.length} jugadores visibles</small>
+              <small>{visibleRosterPlayers.length} de {players.length} disponibles · {draftedPlayers.length} seleccionados</small>
+            </div>
+            <div className="roster-search">
+              <label htmlFor="roster-player-search">Buscar jugador</label>
+              <div>
+                <input id="roster-player-search" type="search" value={rosterSearch} onChange={(event) => setRosterSearch(event.target.value)} placeholder="Buscar jugador..." autoComplete="off" />
+                {rosterSearch && <button className="button button-small" type="button" onClick={() => setRosterSearch("")}>Limpiar</button>}
+              </div>
             </div>
             <div className="roster-list">
-              {visibleRosterPlayers.map((player) => (
+              {visibleRosterPlayers.length ? visibleRosterPlayers.map((player) => (
                 <div className="roster-row" key={player.id}>
                   <div><strong>{player.nombre}</strong><span>{player.posicion}</span></div>
                   <div className="roster-controls">
@@ -245,7 +264,7 @@ export function MatchdaysManager() {
                     <label><span className="sr-only">Equipo de {player.nombre}</span><select disabled={!draftSelection[player.nombre]} value={assignments[player.nombre] || ""} onChange={(event) => setTeam(player.nombre, event.target.value as Equipo | "")}><option value="">Sin asignar</option><option value="LOCAL">Local</option><option value="VISITANTE">Visitante</option></select></label>
                   </div>
                 </div>
-              ))}
+              )) : <p className="roster-empty" role="status">No hay jugadores que coincidan con la búsqueda y el filtro.</p>}
             </div>
             <div className="form-actions">
               {editingRoster && <button className="button" type="button" onClick={() => { setEditingRoster(null); setAssignments({}); setDraftSelection({}); }}>Cancelar edición</button>}

@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useState } from "react";
 import NextImage from "next/image";
-import { normalizePlayerPosition, playerPositionLabels } from "@/lib/player-position";
+import { getPlayerPositionAbbreviation, normalizePlayerPosition } from "@/lib/player-position";
 import type { Jugador } from "@/lib/types";
 
 const IMAGE_WIDTH = 1080;
@@ -72,7 +72,7 @@ function drawTeam(context: CanvasRenderingContext2D, title: string, players: Jug
     context.fillText(fitText(context, player.nombre.toUpperCase(), 320), x + 112, rowY + 32);
 
     const canonicalPosition = normalizePlayerPosition(player.posicion);
-    const position = canonicalPosition ? playerPositionLabels[canonicalPosition] : player.posicion || "Sin posición";
+    const position = canonicalPosition ? getPlayerPositionAbbreviation(player.posicion) : player.posicion || "Sin posición";
     context.fillStyle = "#8CA398";
     context.font = "600 17px Arial, sans-serif";
     context.fillText(position.toUpperCase(), x + 112, rowY + 55);
