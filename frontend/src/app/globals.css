@@ -135,6 +135,7 @@ svg { width: 1.1rem; height: 1.1rem; }
 .metrics-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; }
 .metric-card { position: relative; min-height: 185px; display: flex; flex-direction: column; justify-content: end; padding: 1.25rem; overflow: hidden; border: 1px solid var(--line); background: var(--surface); }
 .metric-card > span { color: var(--steel-400); font-size: .72rem; text-transform: uppercase; letter-spacing: .09em; }.metric-card > strong { margin: .25rem 0; font: 600 3.4rem/.9 var(--font-mono); }.metric-card small { color: var(--steel-400); }.metric-icon { position: absolute; top: 1.15rem; right: 1.15rem; display: grid; place-items: center; width: 2.35rem; height: 2.35rem; color: var(--electric-500); border: 1px solid rgba(34,227,109,.3); }.metric-accent { color: var(--pitch-950); background: var(--electric-500); }.metric-accent > span, .metric-accent small { color: #183a29; }.metric-accent .metric-icon { color: var(--pitch-950); border-color: rgba(6,17,13,.35); }
+.dashboard-actions { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1rem; }.dashboard-action { min-height: 8.25rem; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 1rem; padding: 1.15rem; color: var(--chalk-50); border: 1px solid var(--line); background: linear-gradient(135deg,rgba(16,37,27,.92),rgba(6,17,13,.96)); text-decoration: none; transition: border-color .18s ease, transform .18s ease, background .18s ease; }.dashboard-action:hover, .dashboard-action:focus-visible { border-color: rgba(34,227,109,.72); background: linear-gradient(135deg,rgba(18,61,38,.96),rgba(6,17,13,.96)); transform: translateY(-2px); outline: none; }.dashboard-action-icon { display: grid; place-items: center; width: 3rem; height: 3rem; color: var(--electric-500); border: 1px solid rgba(34,227,109,.35); background: rgba(34,227,109,.08); }.dashboard-action-icon svg { width: 1.4rem; height: 1.4rem; }.dashboard-action > span:nth-child(2) { display: grid; gap: .38rem; }.dashboard-action strong { font: 600 clamp(1.15rem,2vw,1.55rem)/.95 var(--font-display); letter-spacing: .01em; text-transform: uppercase; }.dashboard-action small { color: var(--steel-400); font-size: .76rem; }.dashboard-action-arrow { width: 1.1rem; color: var(--electric-500); }
 .dashboard-grid { display: grid; grid-template-columns: 1.35fr .65fr; gap: 1rem; }
 .feature-panel, .data-panel, .form-panel, .match-card, .team-sheet { padding: 1.4rem; border: 1px solid var(--line); background: var(--surface); }
 .pitch-panel { background: radial-gradient(circle at 50% 120%, rgba(34,227,109,.13), transparent 50%), var(--pitch-850); }
@@ -275,6 +276,11 @@ input:hover, select:hover { border-color: rgba(244,248,245,.35); }.form-actions 
 
 @media (max-width: 360px) {
   .players-grid { grid-template-columns: 175px; }
+}
+
+@media (max-width: 760px) {
+  .dashboard-actions { grid-template-columns: 1fr; }
+  .dashboard-action { min-height: 6.7rem; }
 }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }

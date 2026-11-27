@@ -5,8 +5,14 @@ import { useEffect, useMemo, useState } from "react";
 import { api } from "@/lib/api-client";
 import { displayLevel, formatDate } from "@/lib/format";
 import type { Jugador, MatchDay } from "@/lib/types";
-import { Icon } from "@/components/icons";
-import { Metric, Spinner, StatusPanel } from "@/components/ui";
+import { Icon, type IconName } from "@/components/icons";
+import { Spinner, StatusPanel } from "@/components/ui";
+
+const quickActions: Array<{ href: string; icon: IconName; title: string; description: string }> = [
+  { href: "/jugadores", icon: "users", title: "Gestión jugadores", description: "Administrar el plantel" },
+  { href: "/matchdays", icon: "calendar", title: "Generar sorteo", description: "Crear equipos equilibrados" },
+  { href: "/estadisticas", icon: "chart", title: "Reporte asistencia", description: "Ver estadísticas mensuales" },
+];
 
 export function DashboardOverview() {
   const [players, setPlayers] = useState<Jugador[]>([]);
@@ -24,9 +30,6 @@ export function DashboardOverview() {
       .finally(() => setLoading(false));
   }, []);
 
-  const completed = matches.filter(
-    (match) => match.golesLocal !== null && match.golesVisitante !== null,
-  );
   const latest = matches[0];
   const rated = useMemo(
     () =>
@@ -42,10 +45,14 @@ export function DashboardOverview() {
 
   return (
     <div className="dashboard-stack">
-      <section className="metrics-grid" aria-label="Resumen del equipo">
-        <Metric icon="users" label="Plantilla" value={players.length} detail="jugadores registrados" />
-        <Metric icon="calendar" label="MatchDays" value={matches.length} detail="encuentros guardados" accent />
-        <Metric icon="chart" label="Con marcador" value={completed.length} detail="resultados completos" />
+      <section className="dashboard-actions" aria-label="Acciones principales">
+        {quickActions.map((action) => (
+          <Link className="dashboard-action" href={action.href} key={action.href}>
+            <span className="dashboard-action-icon"><Icon name={action.icon} /></span>
+            <span><strong>{action.title}</strong><small>{action.description}</small></span>
+            <Icon className="dashboard-action-arrow" name="arrow" />
+          </Link>
+        ))}
       </section>
 
       <section className="dashboard-grid">
