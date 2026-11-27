@@ -40,7 +40,7 @@ export function DashboardOverview() {
     [players],
   );
 
-  if (loading) return <div className="content-loading"><Spinner label="Conectando con el backend" /></div>;
+  if (loading) return <div className="content-loading"><Spinner label="Cargando resumen" /></div>;
   if (error) return <StatusPanel tone="error" title="Backend no disponible" message={error} />;
 
   return (

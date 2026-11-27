@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { BrandMark } from "@/components/brand-mark";
 import { AuthProvider, type UserRole } from "@/components/auth-context";
+import { clearApiCache } from "@/lib/api-client";
 
 export function AppShell({ children, username, role }: { children: React.ReactNode; username: string; role: UserRole }) {
   const pathname = usePathname();
@@ -21,6 +22,7 @@ export function AppShell({ children, username, role }: { children: React.ReactNo
         setLogoutError("No fue posible cerrar la sesión de forma segura.");
         return;
       }
+      clearApiCache();
       router.replace("/ingreso");
       router.refresh();
     } finally {
